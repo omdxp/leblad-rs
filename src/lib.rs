@@ -8,6 +8,17 @@ pub fn get_wilaya_list() -> Vec<Wilaya> {
     ALL_WILAYAS.to_vec()
 }
 
+pub fn get_wilaya_by_zip_code(zip_code: u16) -> Option<Wilaya> {
+    for wilaya in ALL_WILAYAS.iter() {
+        for postal_code in wilaya.postal_codes.iter() {
+            if zip_code == *postal_code {
+                return Some(wilaya.clone());
+            }
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -57,5 +68,18 @@ mod tests {
         let expected_first_element = ALL_WILAYAS[0].clone();
         assert_eq!(res.len(), ALL_WILAYAS.len());
         assert_eq!(actual_first_element, expected_first_element.into());
+    }
+
+    #[test]
+    fn get_existing_wilaya_by_zip_code() {
+        let res = get_wilaya_by_zip_code(1_000);
+        assert!(res.is_some());
+        assert_eq!(res.unwrap().name, ALL_WILAYAS[0].name);
+    }
+
+    #[test]
+    fn get_non_existing_wilaya_by_zip_code() {
+        let res = get_wilaya_by_zip_code(12_345);
+        assert!(res.is_none());
     }
 }
