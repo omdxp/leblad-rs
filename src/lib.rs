@@ -37,6 +37,15 @@ pub fn get_adjacent_wilayas(mattricule: u16) -> Option<Vec<u16>> {
     None
 }
 
+pub fn get_zip_codes_for_wilaya(mattricule: u16) -> Option<Vec<u16>> {
+    for wilaya in ALL_WILAYAS.iter() {
+        if wilaya.mattricule == mattricule {
+            return Some(wilaya.postal_codes.to_vec());
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -119,5 +128,24 @@ mod tests {
         let res = get_adjacent_wilayas(1);
         assert!(res.is_some());
         assert_eq!(res.unwrap(), ALL_WILAYAS[0].adjacent_wilayas.to_vec());
+    }
+
+    #[test]
+    fn get_non_existing_adjacent_wilayas() {
+        let res = get_adjacent_wilayas(100);
+        assert!(res.is_none());
+    }
+
+    #[test]
+    fn get_existing_zip_codes_for_wilaya() {
+        let res = get_zip_codes_for_wilaya(1);
+        assert!(res.is_some());
+        assert_eq!(res.unwrap(), ALL_WILAYAS[0].postal_codes.to_vec());
+    }
+
+    #[test]
+    fn get_non_existing_zip_codes_for_wilaya() {
+        let res = get_zip_codes_for_wilaya(100);
+        assert!(res.is_none());
     }
 }
