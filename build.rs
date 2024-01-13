@@ -1,6 +1,6 @@
 use std::fs;
 
-const JSON_URL: &'static str =
+const JSON_URL: &str =
     "https://raw.githubusercontent.com/dzcode-io/leblad/master/data/WilayaList.json";
 
 #[derive(serde::Deserialize)]
@@ -147,10 +147,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 );
                 consts.push(Const { name, format });
             }
-            let mut s = format!(
-                r#"// This is auto-generated. Do not edit manually.
+            let mut s = r#"// This is auto-generated. Do not edit manually.
 
-pub struct Wilaya {{
+pub struct Wilaya {
     pub mattricule: u16,
     pub name_ar: &'static str,
     pub name_ber: &'static str,
@@ -160,24 +159,24 @@ pub struct Wilaya {{
     pub postal_codes: &'static[u16],
     pub dairats: &'static[Daira],
     pub adjacent_wilayas: &'static[u16],
-}}
+}
 
-pub struct Daira {{
+pub struct Daira {
     pub code: u16,
     pub name: &'static str,
     pub name_ar: &'static str,
     pub name_en: &'static str,
     pub baladyiats: Option<&'static[Baladyia]>,
-}}
+}
 
-pub struct Baladyia {{
+pub struct Baladyia {
     pub code: u16,
     pub name: &'static str,
     pub name_en: &'static str,
     pub name_ar: &'static str,
-}}
-"#,
-            );
+}
+"#
+            .to_string();
             s.push_str(
                 consts
                     .iter()
