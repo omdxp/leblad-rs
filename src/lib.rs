@@ -19,6 +19,15 @@ pub fn get_wilaya_by_zip_code(zip_code: u16) -> Option<Wilaya> {
     None
 }
 
+pub fn get_wilaya_by_code(mattricule: u16) -> Option<Wilaya> {
+    for wilaya in ALL_WILAYAS.iter() {
+        if wilaya.mattricule == mattricule {
+            return Some(wilaya.clone());
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -80,6 +89,19 @@ mod tests {
     #[test]
     fn get_non_existing_wilaya_by_zip_code() {
         let res = get_wilaya_by_zip_code(12_345);
+        assert!(res.is_none());
+    }
+
+    #[test]
+    fn get_existing_wilaya_by_code() {
+        let res = get_wilaya_by_code(1);
+        assert!(res.is_some());
+        assert_eq!(res.unwrap().name, ALL_WILAYAS[0].name);
+    }
+
+    #[test]
+    fn get_non_existing_wilaya_by_code() {
+        let res = get_wilaya_by_code(100);
         assert!(res.is_none());
     }
 }
