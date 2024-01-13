@@ -136,7 +136,7 @@ pub fn get_baladyiats_for_wilaya(wilaya_name: &str) -> Option<Vec<Baladyia>> {
                     }
                 }
             }
-            if baladyiats.len() > 0 {
+            if !baladyiats.is_empty() {
                 return Some(baladyiats);
             } else {
                 return None;
