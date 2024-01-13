@@ -46,6 +46,15 @@ pub fn get_zip_codes_for_wilaya(mattricule: u16) -> Option<Vec<u16>> {
     None
 }
 
+pub fn get_dairats_for_wilaya(mattricule: u16) -> Option<Vec<Daira>> {
+    for wilaya in ALL_WILAYAS.iter() {
+        if wilaya.mattricule == mattricule {
+            return Some(wilaya.dairats.to_vec());
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -146,6 +155,19 @@ mod tests {
     #[test]
     fn get_non_existing_zip_codes_for_wilaya() {
         let res = get_zip_codes_for_wilaya(100);
+        assert!(res.is_none());
+    }
+
+    #[test]
+    fn get_existing_dairats_for_wilaya() {
+        let res = get_dairats_for_wilaya(1);
+        assert!(res.is_some());
+        assert_eq!(res.unwrap(), ALL_WILAYAS[0].dairats.to_vec());
+    }
+
+    #[test]
+    fn get_non_existing_dairats_for_wilaya() {
+        let res = get_dairats_for_wilaya(100);
         assert!(res.is_none());
     }
 }
