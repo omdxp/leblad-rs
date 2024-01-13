@@ -28,6 +28,15 @@ pub fn get_wilaya_by_code(mattricule: u16) -> Option<Wilaya> {
     None
 }
 
+pub fn get_adjacent_wilayas(mattricule: u16) -> Option<Vec<u16>> {
+    for wilaya in ALL_WILAYAS.iter() {
+        if wilaya.mattricule == mattricule {
+            return Some(wilaya.adjacent_wilayas.to_vec());
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -103,5 +112,12 @@ mod tests {
     fn get_non_existing_wilaya_by_code() {
         let res = get_wilaya_by_code(100);
         assert!(res.is_none());
+    }
+
+    #[test]
+    fn get_existing_adjacent_wilayas() {
+        let res = get_adjacent_wilayas(1);
+        assert!(res.is_some());
+        assert_eq!(res.unwrap(), ALL_WILAYAS[0].adjacent_wilayas.to_vec());
     }
 }
