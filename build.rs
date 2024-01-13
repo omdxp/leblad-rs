@@ -86,6 +86,11 @@ pub struct Wilaya {
     pub adjacent_wilayas: Vec<u16>,
 }
 
+pub struct Const {
+    pub name: String,
+    pub format: String,
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     match reqwest::get(JSON_URL).await {
@@ -93,10 +98,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let json: serde_json::Value = res.json().await?;
             let wilayas = serde_json::from_value::<Vec<Wilaya>>(json).unwrap();
             std::fs::create_dir_all("./src/_auto_generated")?;
-            let mut consts = vec![];
+            let mut consts: Vec<Const> = vec![];
             for (i, wilaya) in wilayas.iter().enumerate() {
-                consts.push(format!(
-                    r#"pub const W{}: Wilaya = Wilaya {{
+                let name = format!("W{}", i + 1);
+                let format = format!(
+                    r#"const W{}: Wilaya = Wilaya {{
     mattricule: {},
     name_ar: "{}",
     name_ber: "{}",
@@ -138,7 +144,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .map(|e| e.to_string())
                         .collect::<Vec<String>>()
                         .join(", "),
-                ));
+                );
+                consts.push(Const { name, format });
             }
             let mut s = format!(
                 r#"// This is auto-generated. Do not edit manually.
@@ -171,7 +178,25 @@ pub struct Baladyia {{
 }}
 "#,
             );
-            s.push_str(consts.join("\n").as_str());
+            s.push_str(
+                consts
+                    .iter()
+                    .map(|c| c.format.clone())
+                    .collect::<Vec<String>>()
+                    .join("\n")
+                    .as_str(),
+            );
+            s.push_str(
+                format!(
+                    "\npub const ALL_WILAYAS: &[Wilaya] = &[{}];\n",
+                    consts
+                        .iter()
+                        .map(|c| c.name.clone())
+                        .collect::<Vec<String>>()
+                        .join(", ")
+                )
+                .as_str(),
+            );
             fs::write("./src/_auto_generated/mod.rs", s)?;
         }
         Err(_) => panic!("Data was not received"),

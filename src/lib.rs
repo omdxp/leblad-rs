@@ -1,3 +1,6 @@
+#![allow(unused)]
+use _auto_generated::{Baladyia, Daira, Wilaya, ALL_WILAYAS};
+
 mod _auto_generated;
 
 pub fn add(left: usize, right: usize) -> usize {
