@@ -55,6 +55,17 @@ pub fn get_dairats_for_wilaya(mattricule: u16) -> Option<Vec<Daira>> {
     None
 }
 
+pub fn get_wilaya_by_phone_code(phone_code: u16) -> Option<Wilaya> {
+    for wilaya in ALL_WILAYAS.iter() {
+        for pc in wilaya.phone_codes.iter() {
+            if *pc == phone_code {
+                return Some(wilaya.clone());
+            }
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -168,6 +179,19 @@ mod tests {
     #[test]
     fn get_non_existing_dairats_for_wilaya() {
         let res = get_dairats_for_wilaya(100);
+        assert!(res.is_none());
+    }
+
+    #[test]
+    fn get_existing_wilaya_by_phone_code() {
+        let res = get_wilaya_by_phone_code(49);
+        assert!(res.is_some());
+        assert_eq!(res.unwrap().name, ALL_WILAYAS[0].name);
+    }
+
+    #[test]
+    fn get_non_existing_wilaya_by_phone_code() {
+        let res = get_wilaya_by_phone_code(100);
         assert!(res.is_none());
     }
 }
