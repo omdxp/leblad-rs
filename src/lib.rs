@@ -1,3 +1,5 @@
+mod _auto_generated;
+
 pub fn add(left: usize, right: usize) -> usize {
     left + right
 }
