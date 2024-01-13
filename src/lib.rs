@@ -107,6 +107,15 @@ pub fn get_baladyiats_for_daira_code(daira_code: u16) -> Option<Vec<Baladyia>> {
     None
 }
 
+pub fn get_phone_codes_for_wilaya(wilaya_name: &str) -> Option<Vec<u16>> {
+    for wilaya in ALL_WILAYAS.iter() {
+        if wilaya.name == wilaya_name {
+            return Some(wilaya.phone_codes.to_vec());
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -284,6 +293,19 @@ mod tests {
     #[test]
     fn get_non_existing_baladyiats_for_daira_code() {
         let res = get_baladyiats_for_daira_code(1_000);
+        assert!(res.is_none());
+    }
+
+    #[test]
+    fn get_existing_phone_codes_for_wilaya() {
+        let res = get_phone_codes_for_wilaya("Adrar");
+        assert!(res.is_some());
+        assert_eq!(res.unwrap(), ALL_WILAYAS[0].phone_codes.to_vec());
+    }
+
+    #[test]
+    fn get_non_existing_phone_codes_for_wilaya() {
+        let res = get_phone_codes_for_wilaya("Tizelabine");
         assert!(res.is_none());
     }
 }
