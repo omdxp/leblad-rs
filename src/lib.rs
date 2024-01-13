@@ -125,6 +125,27 @@ pub fn get_first_phone_code_for_wilaya(wilaya_name: &str) -> Option<u16> {
     None
 }
 
+pub fn get_baladyiats_for_wilaya(wilaya_name: &str) -> Option<Vec<Baladyia>> {
+    for wilaya in ALL_WILAYAS.iter() {
+        if wilaya.name == wilaya_name {
+            let mut baladyiats = vec![];
+            for daira in wilaya.dairats.iter() {
+                if daira.baladyiats.is_some() {
+                    for baladyia in daira.baladyiats.unwrap().iter() {
+                        baladyiats.push(baladyia.clone());
+                    }
+                }
+            }
+            if baladyiats.len() > 0 {
+                return Some(baladyiats);
+            } else {
+                return None;
+            }
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -328,6 +349,27 @@ mod tests {
     #[test]
     fn get_non_existing_first_phone_code_for_wilaya() {
         let res = get_first_phone_code_for_wilaya("Tizelabine");
+        assert!(res.is_none());
+    }
+
+    #[test]
+    fn get_existing_baladyiats_for_wilaya() {
+        let res = get_baladyiats_for_wilaya("Adrar");
+        assert!(res.is_some());
+        let mut baladyiats = vec![];
+        for daira in ALL_WILAYAS[0].dairats.iter() {
+            if daira.baladyiats.is_some() {
+                for baladyia in daira.baladyiats.unwrap().iter() {
+                    baladyiats.push(baladyia.clone());
+                }
+            }
+        }
+        assert_eq!(res.unwrap(), baladyiats);
+    }
+
+    #[test]
+    fn get_non_existing_baladyiats_for_wilaya() {
+        let res = get_baladyiats_for_wilaya("Tizelabine");
         assert!(res.is_none());
     }
 }
