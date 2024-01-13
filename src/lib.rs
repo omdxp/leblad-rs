@@ -92,6 +92,21 @@ pub fn get_baladyiats_for_daira(daira_name: &str) -> Option<Vec<Baladyia>> {
     None
 }
 
+pub fn get_baladyiats_for_daira_code(daira_code: u16) -> Option<Vec<Baladyia>> {
+    for wilaya in ALL_WILAYAS.iter() {
+        for daira in wilaya.dairats.iter() {
+            if daira.code == daira_code {
+                if daira.baladyiats.is_some() {
+                    return Some(daira.baladyiats.unwrap().to_vec());
+                } else {
+                    return None;
+                }
+            }
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -250,6 +265,25 @@ mod tests {
     #[test]
     fn get_non_existing_baladyiats_for_daira() {
         let res = get_baladyiats_for_daira("TIZELABINE");
+        assert!(res.is_none());
+    }
+
+    #[test]
+    fn get_existing_baladyiats_for_daira_code() {
+        let res = get_baladyiats_for_daira_code(101);
+        assert!(res.is_some());
+        let mut baladyiats = vec![];
+        for daira in ALL_WILAYAS[0].dairats.iter() {
+            if daira.code == 101 {
+                baladyiats = daira.baladyiats.unwrap().to_vec();
+            }
+        }
+        assert_eq!(res.unwrap(), baladyiats);
+    }
+
+    #[test]
+    fn get_non_existing_baladyiats_for_daira_code() {
+        let res = get_baladyiats_for_daira_code(1_000);
         assert!(res.is_none());
     }
 }
