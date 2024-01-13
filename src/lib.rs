@@ -161,6 +161,21 @@ pub fn get_wilaya_by_baladyia_name(baladyia_name: &str) -> Option<Wilaya> {
     None
 }
 
+pub fn get_daira_by_baladyia_name(baladyia_name: &str) -> Option<Daira> {
+    for wilaya in ALL_WILAYAS.iter() {
+        for daira in wilaya.dairats.iter() {
+            if daira.baladyiats.is_some() {
+                for baladyia in daira.baladyiats.unwrap().iter() {
+                    if baladyia.name == baladyia_name {
+                        return Some(daira.clone());
+                    }
+                }
+            }
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -398,6 +413,19 @@ mod tests {
     #[test]
     fn get_non_existing_wilaya_by_baladyia_name() {
         let res = get_wilaya_by_baladyia_name("TIZELABINE");
+        assert!(res.is_none());
+    }
+
+    #[test]
+    fn get_existing_daira_by_baladyia_name() {
+        let res = get_daira_by_baladyia_name("OULED AHMED TIMMI");
+        assert!(res.is_some());
+        assert_eq!(res.unwrap(), ALL_WILAYAS[0].dairats[0]);
+    }
+
+    #[test]
+    fn get_non_existing_daira_by_baladyia_name() {
+        let res = get_daira_by_baladyia_name("TIZELABINE");
         assert!(res.is_none());
     }
 }
