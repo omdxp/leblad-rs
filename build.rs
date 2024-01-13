@@ -149,6 +149,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let mut s = r#"// This is auto-generated. Do not edit manually.
 
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Wilaya {
     pub mattricule: u16,
     pub name_ar: &'static str,
@@ -161,6 +162,7 @@ pub struct Wilaya {
     pub adjacent_wilayas: &'static[u16],
 }
 
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Daira {
     pub code: u16,
     pub name: &'static str,
@@ -169,6 +171,7 @@ pub struct Daira {
     pub baladyiats: Option<&'static[Baladyia]>,
 }
 
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Baladyia {
     pub code: u16,
     pub name: &'static str,
