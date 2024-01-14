@@ -1,13 +1,13 @@
 [package]
 name = "leblad"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 authors = ["Omar Belghaouti <omarbelghaouti@gmail.com>"]
 description = "A rust library providing a list of Algerian administrative areas with many useful APIs, based on dzcode-io/leblad"
 license-file = "LICENSE"
 repository = "https://github.com/omdxp/leblad-rs"
 readme = "README.md"
-keywords = ["leblad", "algeria", "administrative areas"]
+keywords = ["leblad", "algeria", "administrative"]
 
 [build-dependencies]
 tokio = { version = "1.35.1", features = ["full"] }
