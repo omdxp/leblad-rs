@@ -7,7 +7,7 @@ description = "A rust library providing a list of Algerian administrative areas 
 license-file = "LICENSE"
 repository = "https://github.com/omdxp/leblad-rs"
 readme = "README.md"
-keywords = ["complex", "number", "math"]
+keywords = ["leblad", "algeria", "administrative areas"]
 
 [build-dependencies]
 tokio = { version = "1.35.1", features = ["full"] }
