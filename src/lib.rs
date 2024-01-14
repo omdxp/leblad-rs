@@ -1,13 +1,78 @@
-#![allow(unused)]
-use _auto_generated::{Baladyia, Daira, Wilaya, ALL_WILAYAS};
+#![warn(missing_docs)]
+//! leblad
+//!
+//! Leblad is a library that provides an easy API to get all the information you need for Algerian administrative areas.
+//!
+//! # Example
+//!
+//! ```
+//! use leblad::get_wilaya_list;
+//!
+//! let wilayas = get_wilaya_list();
+//!
+//! assert_eq!(wilayas[0].name, "Adrar");
+//! ```
+
+use _auto_generated::ALL_WILAYAS;
+pub use _auto_generated::{Baladyia, Daira, Wilaya};
 
 mod _auto_generated;
-mod utils;
 
+/// Get all wilayas.
+/// # Example
+/// ```
+/// use leblad::get_wilaya_list;
+/// let wilayas = get_wilaya_list();
+/// assert_eq!(wilayas[0].name, "Adrar");
+/// ```
+/// - Results can be filtered by defining a struct that implements From trait:
+/// ```
+/// use leblad::{get_wilaya_list, Wilaya};
+///
+/// #[derive(Debug, Clone, PartialEq)]
+/// struct FilteredWilaya {
+///     pub mattricule: u16,
+///     pub name_ar: &'static str,
+///     pub name_ber: &'static str,
+///     pub name_en: &'static str,
+/// }
+///
+/// impl From<Wilaya> for FilteredWilaya {
+///     fn from(wilaya: Wilaya) -> Self {
+///         Self {
+///             mattricule: wilaya.mattricule,
+///             name_ar: wilaya.name_ar,
+///             name_ber: wilaya.name_ber,
+///             name_en: wilaya.name_en,
+///         }
+///     }
+/// }
+///
+/// let wilayas = get_wilaya_list();
+///
+/// let filtered_wilayas: Vec<FilteredWilaya> = wilayas
+///     .iter()
+///     .map(|e| FilteredWilaya {
+///         mattricule: e.mattricule,
+///         name_ar: e.name_ar,
+///         name_ber: e.name_ber,
+///         name_en: e.name_en,
+///     })
+///     .collect();
+///
+/// assert_eq!(filtered_wilayas[0].name_en, "Adrar");
+/// ```
 pub fn get_wilaya_list() -> Vec<Wilaya> {
     ALL_WILAYAS.to_vec()
 }
 
+/// Get wilaya by zip code.
+/// # Example
+/// ```
+/// use leblad::get_wilaya_by_zip_code;
+/// let wilaya = get_wilaya_by_zip_code(1_000);
+/// assert_eq!(wilaya.unwrap().name, "Adrar");
+/// ```
 pub fn get_wilaya_by_zip_code(zip_code: u16) -> Option<Wilaya> {
     for wilaya in ALL_WILAYAS.iter() {
         for postal_code in wilaya.postal_codes.iter() {
@@ -19,6 +84,13 @@ pub fn get_wilaya_by_zip_code(zip_code: u16) -> Option<Wilaya> {
     None
 }
 
+/// Get wilaya by code.
+/// # Example
+/// ```
+/// use leblad::get_wilaya_by_code;
+/// let wilaya = get_wilaya_by_code(1);
+/// assert_eq!(wilaya.unwrap().name, "Adrar");
+/// ```
 pub fn get_wilaya_by_code(mattricule: u16) -> Option<Wilaya> {
     for wilaya in ALL_WILAYAS.iter() {
         if wilaya.mattricule == mattricule {
@@ -28,6 +100,13 @@ pub fn get_wilaya_by_code(mattricule: u16) -> Option<Wilaya> {
     None
 }
 
+/// Get adjacent wilayas.
+/// # Example
+/// ```
+/// use leblad::get_adjacent_wilayas;
+/// let adjacent_wilayas = get_adjacent_wilayas(1);
+/// assert_eq!(adjacent_wilayas.unwrap(), vec![37, 8, 32, 3, 47, 11]);
+/// ```
 pub fn get_adjacent_wilayas(mattricule: u16) -> Option<Vec<u16>> {
     for wilaya in ALL_WILAYAS.iter() {
         if wilaya.mattricule == mattricule {
@@ -37,6 +116,13 @@ pub fn get_adjacent_wilayas(mattricule: u16) -> Option<Vec<u16>> {
     None
 }
 
+/// Get zip codes for wilaya.
+/// # Example
+/// ```
+/// use leblad::get_zip_codes_for_wilaya;
+/// let zip_codes = get_zip_codes_for_wilaya(1);
+/// assert_eq!(zip_codes.unwrap()[0], 1_000);
+/// ```
 pub fn get_zip_codes_for_wilaya(mattricule: u16) -> Option<Vec<u16>> {
     for wilaya in ALL_WILAYAS.iter() {
         if wilaya.mattricule == mattricule {
@@ -46,6 +132,13 @@ pub fn get_zip_codes_for_wilaya(mattricule: u16) -> Option<Vec<u16>> {
     None
 }
 
+/// Get dairats for wilaya.
+/// # Example
+/// ```
+/// use leblad::get_dairats_for_wilaya;
+/// let dairats = get_dairats_for_wilaya(1);
+/// assert_eq!(dairats.unwrap()[0].name, "ADRAR");
+/// ```
 pub fn get_dairats_for_wilaya(mattricule: u16) -> Option<Vec<Daira>> {
     for wilaya in ALL_WILAYAS.iter() {
         if wilaya.mattricule == mattricule {
@@ -55,6 +148,13 @@ pub fn get_dairats_for_wilaya(mattricule: u16) -> Option<Vec<Daira>> {
     None
 }
 
+/// Get wilaya by phone code.
+/// # Example
+/// ```
+/// use leblad::get_wilaya_by_phone_code;
+/// let wilaya = get_wilaya_by_phone_code(49);
+/// assert_eq!(wilaya.unwrap().name, "Adrar");
+/// ```
 pub fn get_wilaya_by_phone_code(phone_code: u16) -> Option<Wilaya> {
     for wilaya in ALL_WILAYAS.iter() {
         for pc in wilaya.phone_codes.iter() {
@@ -66,6 +166,13 @@ pub fn get_wilaya_by_phone_code(phone_code: u16) -> Option<Wilaya> {
     None
 }
 
+/// Get wilaya by daira name.
+/// # Example
+/// ```
+/// use leblad::get_wilaya_by_daira_name;
+/// let wilaya = get_wilaya_by_daira_name("ADRAR");
+/// assert_eq!(wilaya.unwrap().name, "Adrar");
+/// ```
 pub fn get_wilaya_by_daira_name(daira_name: &str) -> Option<Wilaya> {
     for wilaya in ALL_WILAYAS.iter() {
         for daira in wilaya.dairats.iter() {
@@ -77,6 +184,13 @@ pub fn get_wilaya_by_daira_name(daira_name: &str) -> Option<Wilaya> {
     None
 }
 
+/// Get baladyiats for daira.
+/// # Example
+/// ```
+/// use leblad::get_baladyiats_for_daira;
+/// let baladyiats = get_baladyiats_for_daira("ADRAR");
+/// assert_eq!(baladyiats.unwrap()[0].name, "ADRAR");
+/// ```
 pub fn get_baladyiats_for_daira(daira_name: &str) -> Option<Vec<Baladyia>> {
     for wilaya in ALL_WILAYAS.iter() {
         for daira in wilaya.dairats.iter() {
@@ -92,6 +206,13 @@ pub fn get_baladyiats_for_daira(daira_name: &str) -> Option<Vec<Baladyia>> {
     None
 }
 
+/// Get baladyiats for daira code.
+/// # Example
+/// ```
+/// use leblad::get_baladyiats_for_daira_code;
+/// let baladyiats = get_baladyiats_for_daira_code(101);
+/// assert_eq!(baladyiats.unwrap()[0].name, "ADRAR");
+/// ```
 pub fn get_baladyiats_for_daira_code(daira_code: u16) -> Option<Vec<Baladyia>> {
     for wilaya in ALL_WILAYAS.iter() {
         for daira in wilaya.dairats.iter() {
@@ -107,6 +228,13 @@ pub fn get_baladyiats_for_daira_code(daira_code: u16) -> Option<Vec<Baladyia>> {
     None
 }
 
+/// Get phone codes for wilaya.
+/// # Example
+/// ```
+/// use leblad::get_phone_codes_for_wilaya;
+/// let phone_codes = get_phone_codes_for_wilaya("Adrar");
+/// assert_eq!(phone_codes.unwrap(), vec![49]);
+/// ```
 pub fn get_phone_codes_for_wilaya(wilaya_name: &str) -> Option<Vec<u16>> {
     for wilaya in ALL_WILAYAS.iter() {
         if wilaya.name == wilaya_name {
@@ -116,6 +244,13 @@ pub fn get_phone_codes_for_wilaya(wilaya_name: &str) -> Option<Vec<u16>> {
     None
 }
 
+/// Get first phone code for wilaya.
+/// # Example
+/// ```
+/// use leblad::get_first_phone_code_for_wilaya;
+/// let first_phone_code = get_first_phone_code_for_wilaya("Adrar");
+/// assert_eq!(first_phone_code.unwrap(), 49);
+/// ```
 pub fn get_first_phone_code_for_wilaya(wilaya_name: &str) -> Option<u16> {
     for wilaya in ALL_WILAYAS.iter() {
         if wilaya.name == wilaya_name {
@@ -125,6 +260,13 @@ pub fn get_first_phone_code_for_wilaya(wilaya_name: &str) -> Option<u16> {
     None
 }
 
+/// Get baladyiats for wilaya.
+/// # Example
+/// ```
+/// use leblad::get_baladyiats_for_wilaya;
+/// let baladyiats = get_baladyiats_for_wilaya("Adrar");
+/// assert_eq!(baladyiats.unwrap()[0].name, "ADRAR");
+/// ```
 pub fn get_baladyiats_for_wilaya(wilaya_name: &str) -> Option<Vec<Baladyia>> {
     for wilaya in ALL_WILAYAS.iter() {
         if wilaya.name == wilaya_name {
@@ -146,6 +288,13 @@ pub fn get_baladyiats_for_wilaya(wilaya_name: &str) -> Option<Vec<Baladyia>> {
     None
 }
 
+/// Get wilaya by baladyia name.
+/// # Example
+/// ```
+/// use leblad::get_wilaya_by_baladyia_name;
+/// let wilaya = get_wilaya_by_baladyia_name("ADRAR");
+/// assert_eq!(wilaya.unwrap().name, "Adrar");
+/// ```
 pub fn get_wilaya_by_baladyia_name(baladyia_name: &str) -> Option<Wilaya> {
     for wilaya in ALL_WILAYAS.iter() {
         for daira in wilaya.dairats.iter() {
@@ -161,6 +310,13 @@ pub fn get_wilaya_by_baladyia_name(baladyia_name: &str) -> Option<Wilaya> {
     None
 }
 
+/// Get daira by baladyia name.
+/// # Example
+/// ```
+/// use leblad::get_daira_by_baladyia_name;
+/// let daira = get_daira_by_baladyia_name("ADRAR");
+/// assert_eq!(daira.unwrap().name, "ADRAR");
+/// ```
 pub fn get_daira_by_baladyia_name(baladyia_name: &str) -> Option<Daira> {
     for wilaya in ALL_WILAYAS.iter() {
         for daira in wilaya.dairats.iter() {
