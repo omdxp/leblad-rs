@@ -149,33 +149,60 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let mut s = r#"// This is auto-generated. Do not edit manually.
 
+/// Wilaya struct.
+/// ## Description
+/// This struct is used to define a wilaya from our database.
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct Wilaya {
+    /// Wilaya mattricule or code.
     pub mattricule: u16,
+    /// Wilaya's name in Arabic.
     pub name_ar: &'static str,
+    /// Wilaya's name in Berber.
     pub name_ber: &'static str,
+    /// Wilaya's name in English.
     pub name_en: &'static str,
+    /// Wilaya's name.
     pub name: &'static str,
+    /// Wilaya's phone codes.
     pub phone_codes: &'static[u16],
+    /// Wilaya's postal codes or zip codes.
     pub postal_codes: &'static[u16],
+    /// Wilaya's dairats.
     pub dairats: &'static[Daira],
+    /// Wilaya's adjacent wilayas.
     pub adjacent_wilayas: &'static[u16],
 }
 
+/// Daira struct.
+/// ## Description
+/// This struct is used to define a daira from our database.
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct Daira {
+    /// Daira's code.
     pub code: u16,
+    /// Daira's name.
     pub name: &'static str,
+    /// Daira's name in Arabic.
     pub name_ar: &'static str,
+    /// Daira's name in English.
     pub name_en: &'static str,
+    /// Daira's baladyiats.
     pub baladyiats: Option<&'static[Baladyia]>,
 }
 
+/// Baladyia struct.
+/// ## Description
+/// This struct is used to define a baladyia from our database.
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct Baladyia {
+    /// Baladyia's code.
     pub code: u16,
+    /// Baladyia's name.
     pub name: &'static str,
+    /// Baladyia's name in English.
     pub name_en: &'static str,
+    /// Baladyia's name in Arabic.
     pub name_ar: &'static str,
 }
 "#
@@ -190,7 +217,7 @@ pub struct Baladyia {
             );
             s.push_str(
                 format!(
-                    "\npub const ALL_WILAYAS: &[Wilaya] = &[{}];\n",
+                    "\npub(crate) const ALL_WILAYAS: &[Wilaya] = &[{}];\n",
                     consts
                         .iter()
                         .map(|c| c.name.clone())
