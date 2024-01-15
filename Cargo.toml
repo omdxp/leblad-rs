@@ -1,6 +1,6 @@
 [package]
 name = "leblad"
-version = "1.0.1"
+version = "1.0.2"
 edition = "2021"
 authors = ["Omar Belghaouti <omarbelghaouti@gmail.com>"]
 description = "A rust library providing a list of Algerian administrative areas with many useful APIs, based on dzcode-io/leblad"
