@@ -74,13 +74,9 @@ pub fn get_wilaya_list<'a>() -> &'a [Wilaya] {
 /// assert_eq!(wilaya.unwrap().name, "Adrar");
 /// ```
 pub fn get_wilaya_by_zip_code<'a>(zip_code: u16) -> Option<&'a Wilaya> {
-    ALL_WILAYAS.iter().find(|wilaya| {
-        wilaya
-            .postal_codes
-            .iter()
-            .find(|pc| **pc == zip_code)
-            .is_some()
-    })
+    ALL_WILAYAS
+        .iter()
+        .find(|wilaya| wilaya.postal_codes.iter().any(|pc| *pc == zip_code))
 }
 
 /// Get wilaya by code.
@@ -146,13 +142,9 @@ pub fn get_dairats_for_wilaya<'a>(mattricule: u16) -> Option<&'a [Daira]> {
 /// assert_eq!(wilaya.unwrap().name, "Adrar");
 /// ```
 pub fn get_wilaya_by_phone_code<'a>(phone_code: u16) -> Option<&'a Wilaya> {
-    ALL_WILAYAS.iter().find(|wilaya| {
-        wilaya
-            .phone_codes
-            .iter()
-            .find(|pc| **pc == phone_code)
-            .is_some()
-    })
+    ALL_WILAYAS
+        .iter()
+        .find(|wilaya| wilaya.phone_codes.iter().any(|pc| *pc == phone_code))
 }
 
 /// Get wilaya by daira name.
@@ -163,13 +155,9 @@ pub fn get_wilaya_by_phone_code<'a>(phone_code: u16) -> Option<&'a Wilaya> {
 /// assert_eq!(wilaya.unwrap().name, "Adrar");
 /// ```
 pub fn get_wilaya_by_daira_name<'a>(daira_name: &str) -> Option<&'a Wilaya> {
-    ALL_WILAYAS.iter().find(|wilaya| {
-        wilaya
-            .dairats
-            .iter()
-            .find(|daira| daira.name == daira_name)
-            .is_some()
-    })
+    ALL_WILAYAS
+        .iter()
+        .find(|wilaya| wilaya.dairats.iter().any(|daira| daira.name == daira_name))
 }
 
 /// Get baladyiats for daira.
@@ -183,7 +171,7 @@ pub fn get_baladyiats_for_daira(daira_name: &str) -> Option<&[Baladyia]> {
     ALL_WILAYAS.iter().find_map(|wilaya| {
         wilaya.dairats.iter().find_map(|daira| {
             if daira.name == daira_name {
-                daira.baladyiats.as_ref().map(|baladyiats| *baladyiats)
+                daira.baladyiats.as_ref().copied()
             } else {
                 None
             }
@@ -202,7 +190,7 @@ pub fn get_baladyiats_for_daira_code<'a>(daira_code: u16) -> Option<&'a [Baladyi
     ALL_WILAYAS.iter().find_map(|wilaya| {
         wilaya.dairats.iter().find_map(|daira| {
             if daira.code == daira_code {
-                daira.baladyiats.as_ref().map(|baladyiats| *baladyiats)
+                daira.baladyiats.as_ref().copied()
             } else {
                 None
             }
@@ -260,18 +248,15 @@ pub fn get_baladyiats_for_wilaya(wilaya_name: &str) -> Option<Vec<Baladyia>> {
             wilaya
                 .dairats
                 .iter()
-                .filter_map(|daira| {
-                    Some(
-                        daira
-                            .baladyiats
-                            .as_ref()
-                            .map(|baladyiats| baladyiats.iter().cloned())
-                            .into_iter()
-                            .flatten()
-                            .collect::<Vec<_>>(),
-                    )
+                .flat_map(|daira| {
+                    daira
+                        .baladyiats
+                        .as_ref()
+                        .map(|baladyiats| baladyiats.iter().cloned())
+                        .into_iter()
+                        .flatten()
+                        .collect::<Vec<_>>()
                 })
-                .flatten()
                 .collect::<Vec<_>>()
         })
 }
@@ -285,17 +270,13 @@ pub fn get_baladyiats_for_wilaya(wilaya_name: &str) -> Option<Vec<Baladyia>> {
 /// ```
 pub fn get_wilaya_by_baladyia_name(baladyia_name: &str) -> Option<&Wilaya> {
     ALL_WILAYAS.iter().find(|wilaya| {
-        wilaya
-            .dairats
-            .iter()
-            .find(|daira| {
-                daira.baladyiats.as_ref().map_or(false, |baladyiats| {
-                    baladyiats
-                        .iter()
-                        .any(|baladyia| baladyia.name == baladyia_name)
-                })
+        wilaya.dairats.iter().any(|daira| {
+            daira.baladyiats.as_ref().map_or(false, |baladyiats| {
+                baladyiats
+                    .iter()
+                    .any(|baladyia| baladyia.name == baladyia_name)
             })
-            .is_some()
+        })
     })
 }
 
